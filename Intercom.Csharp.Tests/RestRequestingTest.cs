@@ -9,7 +9,9 @@ namespace Intercom.Csharp.Tests
         [TestCase("users")]
         public void GetRequestTest(string path)
         {
-            Assert.DoesNotThrow(() => GetRequest(path));
+            string tmp = "";
+            Assert.DoesNotThrow(() => { tmp = GetRequest(path); });
+            Assert.That(tmp, Is.StringContaining("\"error.list\""));
 
         }
 
