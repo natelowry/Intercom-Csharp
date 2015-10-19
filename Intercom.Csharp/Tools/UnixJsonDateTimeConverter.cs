@@ -9,7 +9,7 @@ namespace Intercom.Csharp.Tools
     /// </summary>
     public class UnixJsonDateTimeConverter : DateTimeConverterBase
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, Newtonsoft.Json.JsonSerializer jsonSerializer)
         {
             if (reader.TokenType != JsonToken.Integer)
             {
@@ -26,7 +26,7 @@ namespace Intercom.Csharp.Tools
             return date;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, object value, Newtonsoft.Json.JsonSerializer serializer)
         {
             long ticks;
             if (value is DateTime)
