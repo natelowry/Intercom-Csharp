@@ -80,13 +80,31 @@ namespace Intercom.Csharp.Users
         }
 
         /// <summary>
+        /// Deletes a user. Expects the email of the user
+        /// </summary>
+        /// <param name="emailAddress">The email used to delete the user.</param>
+        public void Delete(string emailAddress)
+        {
+            DeleteRequest(String.Format("/users?email={0}", emailAddress));
+        }
+
+        /// <summary>
+        /// Deletes a user. Expects the user_id of the user
+        /// </summary>
+        /// <param name="userId">The user_id used to delete the user.</param>
+        public void Delete(int userId)
+        {
+            DeleteRequest(String.Format("/users?user_id={0}", userId));
+        }
+
+        /// <summary>
         /// Updates a user. Expects a JSON object describing the user.
         /// </summary>
         /// <param name="user">The new user data to update</param>
         /// <returns>The updated user object if success, null otherwise.</returns>
         public User Update(User user)
         {
-            return PutRequest<User, User>(user, "/users/");
+            return PutRequest<User, User>(user, "/users");
         }
     }
 }
