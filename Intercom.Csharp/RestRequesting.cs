@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using RestSharp;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Intercom.Csharp.Configuration;
@@ -101,9 +102,51 @@ namespace Intercom.Csharp
             return Request<TOutput, TInput>(Method.POST, obj, path);
         }
 
+        protected bool PostRequest<TInput>(TInput obj, string path) 
+        {
+            return Request(Method.POST, obj, path);
+        }
+
         protected void DeleteRequest(string path)
         {
             Request<List<object>, object>(Method.DELETE, null, path);
+        }
+
+        private bool Request<TInput>(Method method, TInput obj, string path) 
+        {
+            RestClient client = new RestClient(Config.ApiBaseUrl);
+            client.Authenticator = new HttpBasicAuthenticator(this.AuthUsername, this.AuthPassword);
+            client.UserAgent = RestRequesting.UserAgent;
+
+            RestRequest request = new RestRequest(path, method);
+            request.RequestFormat = DataFormat.Json;
+            request.JsonSerializer = new JsonSerializer();
+
+            if (obj != null)
+            {
+                request.AddBody(obj);
+            }
+
+            var response = client.Execute(request);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                throw new IntercomException("Not Found");
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+            {
+                throw new IntercomException("Internal Server Error");
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new IntercomException("Client identifier not found");
+            }
+            else if (response.StatusCode == HttpStatusCode.InternalServerError)
+            {
+                throw new IntercomException("Content badly formated");
+            }
+
+            return true;
         }
 
         private TOutput Request<TOutput, TInput>(Method method, TInput obj, string path) where TOutput : new()
