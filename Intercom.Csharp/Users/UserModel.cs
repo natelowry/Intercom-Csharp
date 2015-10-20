@@ -10,13 +10,13 @@ namespace Intercom.Csharp.Users
     /// <summary>
     /// The paging view model
     /// </summary>
-    public class UserViewModel
+    public class UserViewModel<T> where T : class, new()
     {
         /// <summary>
         /// A list of User objects (same as returned by getting a single User)
         /// </summary>
         [DeserializeAs(Name="users")]
-        public List<User> Users { get; set; }
+        public List<User<T>> Users { get; set; }
 
         /// <summary>
         /// The total number of Users tracked in your Intercom application
@@ -49,9 +49,12 @@ namespace Intercom.Csharp.Users
         public int TotalPages { get; set; }
     }
 
+    /// <summary>
+    /// A user uses a deserializing specific type to handle custom_data
+    /// </summary>
     [DataContract]
     [JsonObject(MemberSerialization.OptIn)]
-    public class User
+    public class User<T> where T : class, new()
     {
         /// <summary>
         /// The user's email address
@@ -88,9 +91,9 @@ namespace Intercom.Csharp.Users
         /// <summary>
         /// A hash of key/value pairs containing any other data about the user you want Intercom to store.
         /// </summary>
-        [DeserializeAs(Name = "custom_data")]
-        [JsonProperty("custom_data")]
-        public Dictionary<string, string> CustomData { get; set; }
+        [DeserializeAs(Name = "custom_attributes")]
+        [JsonProperty("custom_attributes")]
+        public T CustomData { get; set; }
 
         [DeserializeAs(Name = "social_profiles")]
         public List<SocialProfile> SocialProfiles { get; set; }

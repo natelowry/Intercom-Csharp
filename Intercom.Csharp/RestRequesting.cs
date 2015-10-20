@@ -163,7 +163,6 @@ namespace Intercom.Csharp
             {
                 request.AddBody(obj);
             }
-
             var response = client.Execute<TOutput>(request);
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)

@@ -17,9 +17,9 @@ namespace Intercom.Csharp.Users
         /// Retrieves a paginated list of all users in your application on Intercom.
         /// </summary>
         /// <returns>The paginated object if successful, null otherwise.</returns>
-        public UserViewModel All()
+        public UserViewModel<T> All<T>() where T : class, new()
         {
-            return GetRequest<UserViewModel>("/users");
+            return GetRequest<UserViewModel<T>>("/users");
         }
 
         /// <summary>
@@ -28,34 +28,34 @@ namespace Intercom.Csharp.Users
         /// <param name="page">Optional, defaults to 1.</param>
         /// <param name="per_page">Optional, defaults to 500 (max of 500)</param>
         /// <returns>The paginated object if successful, null otherwise.</returns>
-        public UserViewModel All(int? page, int? per_page)
+        public UserViewModel<T> All<T>(int? page, int? per_page) where T : class, new()
         {
             if (page.HasValue && per_page.HasValue)
             {
-                return GetRequest<UserViewModel>(String.Format("/users?page={0}&per_page={1}", page.Value, per_page.Value));
+                return GetRequest<UserViewModel<T>>(String.Format("/users?page={0}&per_page={1}", page.Value, per_page.Value));
             }
             else if (page.HasValue && !per_page.HasValue)
             {
-                return GetRequest<UserViewModel>(String.Format("/users?page={0}", page.Value));
+                return GetRequest<UserViewModel<T>>(String.Format("/users?page={0}", page.Value));
             }
             else if (per_page.HasValue && !page.HasValue)
             {
-                return GetRequest<UserViewModel>(String.Format("/users?per_page={0}", per_page.Value));
+                return GetRequest<UserViewModel<T>>(String.Format("/users?per_page={0}", per_page.Value));
             }
             else
             {
-                return All();
+                return All<T>();
             }
         }
 
         /// <summary>
         /// Retrieves a user. Expects either the email or user_id you used to create the user.
         /// </summary>
-        /// <param name="user_id">The user_id used to create the user.</param>
+        /// <param name="userId">The user_id used to create the user.</param>
         /// <returns>The found user if successful, null otherwise.</returns>
-        public User Single(int user_id)
+        public User<T> Single<T>(int userId) where T : class, new()
         {
-            return GetRequest<User>(String.Format("/users?user_id={0}", user_id));
+            return GetRequest<User<T>>(String.Format("/users?user_id={0}", userId));
         }
 
         /// <summary>
@@ -63,9 +63,9 @@ namespace Intercom.Csharp.Users
         /// </summary>
         /// <param name="emailAddress">The email used to create the user.</param>
         /// <returns>The found user if successful, null otherwise.</returns>
-        public User Single(string emailAddress)
+        public User<T> Single<T>(string emailAddress) where T : class, new()
         {
-            return GetRequest<User>(String.Format("/users?email={0}", emailAddress));
+            return GetRequest<User<T>>(String.Format("/users?email={0}", emailAddress));
         }
 
         /// <summary>
@@ -74,9 +74,9 @@ namespace Intercom.Csharp.Users
         /// <remarks>Social and geo location data is fetched asynchronously, so a secondary call to users will be required to fetch it.</remarks>
         /// <param name="user">The user to create</param>
         /// <returns>The user object if success, null otherwise.</returns>
-        public User Create(User user)
+        public User<T> Create<T>(User<T> user) where T : class, new()
         {
-            return PostRequest<User, User>(user, "/users");
+            return PostRequest<User<T>, User<T>>(user, "/users");
         }
 
         /// <summary>
@@ -102,9 +102,9 @@ namespace Intercom.Csharp.Users
         /// </summary>
         /// <param name="user">The new user data to update</param>
         /// <returns>The updated user object if success, null otherwise.</returns>
-        public User Update(User user)
+        public User<T> Update<T>(User<T> user) where T : class, new()
         {
-            return PutRequest<User, User>(user, "/users");
+            return PutRequest<User<T>, User<T>>(user, "/users");
         }
     }
 }
