@@ -12,7 +12,7 @@ namespace Intercom.Csharp.Events
 {
     [DataContract]
     [JsonObject(MemberSerialization.OptIn)]
-    public class Event
+    public class Event<T> where T : class, new()
     {
         /// <summary>
         /// Event's full name describing it's purpose
@@ -35,23 +35,22 @@ namespace Intercom.Csharp.Events
         ///    eitheir an Id or an email address must be set
         /// </summary>
         [DeserializeAs(Name = "user_id")]
-        [JsonProperty("user_id")]
-        public string Id { get; set; }
+        [JsonProperty("user_id", Required = Required.Default)]
+        public string UserId { get; set; }
 
         /// <summary>
         /// The user's email address
         ///    eitheir an Id or an email address must be set
         /// </summary>
         [DeserializeAs(Name = "email")]
-        [JsonProperty("email")]
+        [JsonProperty("email", Required = Required.Default)]
         public string Email { get; set; }
 
 
         /// <summary>
-        /// A hash of key/value pairs containing any other data about the event you want Intercom to store.
+        /// Whatever you want Intercom to store.
         /// </summary>
         [DeserializeAs(Name = "metadata")]
-        [JsonProperty("metadata")]
-        public Dictionary<string, string> MetaData { get; set; }
+        public T MetaData { get; set; }
     }
 }

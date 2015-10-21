@@ -57,16 +57,15 @@ namespace Intercom.Csharp
 
             var response = client.Execute<T>(request);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new IntercomException("Not Found");
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-            {
-                throw new IntercomException("Internal Server Error");
-            }
+            HandleBadResponse(response.Content, response.StatusCode);
 
             return response.Data;
+        }
+
+        private void HandleBadResponse(string content, System.Net.HttpStatusCode code)
+        {
+            if (!(code == HttpStatusCode.Accepted || code == HttpStatusCode.Created || code == HttpStatusCode.OK))
+                throw new IntercomException(String.Format("{0}: {1}", code, content));
         }
 
         protected string GetRequest(string path)
@@ -80,14 +79,7 @@ namespace Intercom.Csharp
 
             var response = client.Execute(request);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new IntercomException("Not Found");
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-            {
-                throw new IntercomException("Internal Server Error");
-            }
+            HandleBadResponse(response.Content, response.StatusCode);
 
             return response.Content;
         }
@@ -129,22 +121,7 @@ namespace Intercom.Csharp
 
             var response = client.Execute(request);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new IntercomException("Not Found");
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-            {
-                throw new IntercomException("Internal Server Error");
-            }
-            else if (response.StatusCode == HttpStatusCode.NotFound)
-            {
-                throw new IntercomException("Client identifier not found");
-            }
-            else if (response.StatusCode == HttpStatusCode.InternalServerError)
-            {
-                throw new IntercomException("Content badly formated");
-            }
+            HandleBadResponse(response.Content, response.StatusCode);
 
             return true;
         }
@@ -165,14 +142,7 @@ namespace Intercom.Csharp
             }
             var response = client.Execute<TOutput>(request);
 
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                throw new IntercomException("Not Found");
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.InternalServerError)
-            {
-                throw new IntercomException("Internal Server Error");
-            }
+            HandleBadResponse(response.Content, response.StatusCode);
 
             return response.Data;
         }

@@ -15,38 +15,49 @@ namespace Intercom.Csharp.Users
         /// <summary>
         /// A list of User objects (same as returned by getting a single User)
         /// </summary>
-        [DeserializeAs(Name="users")]
+        [DeserializeAs(Name = "users")]
+        [JsonProperty("users")]
         public List<User<T>> Users { get; set; }
+
+        /// <summary>
+        /// How are listed the users
+        /// </summary>
+        [DeserializeAs(Name = "pages")]
+        [JsonProperty("pages")]
+        public Pagination Pagination { get; set; }
+    }
+
+    public class Pagination
+    {
+        [DeserializeAs(Name = "next")]
+        [JsonProperty("next")]
+        public string Next { get; set; }
 
         /// <summary>
         /// The total number of Users tracked in your Intercom application
         /// </summary>
         [DeserializeAs(Name = "total_count")]
+        [JsonProperty("total_count")]
         public int Total { get; set; }
 
         /// <summary>
         /// The current requested page
         /// </summary>
         [DeserializeAs(Name = "page")]
-        public int Page { get; set; }
+        [JsonProperty("page")]
+        public int? Page { get; set; }
+
+
+        [DeserializeAs(Name = "per_page")]
+        [JsonProperty("per_page")]
+        public int? PerPage { get; set; }
 
         /// <summary>
-        /// The next page number, if any
+        /// asc or desc
         /// </summary>
-        [DeserializeAs(Name = "next_page")]
-        public int NextPage { get; set; }
-
-        /// <summary>
-        /// The previous page number, if any
-        /// </summary>
-        [DeserializeAs(Name = "previous_page")]
-        public int PreviousPage { get; set; }
-
-        /// <summary>
-        /// The total number of pages
-        /// </summary>
-        [DeserializeAs(Name = "total_pages")]
-        public int TotalPages { get; set; }
+        [DeserializeAs(Name = "order")]
+        [JsonProperty("order")]
+        public bool? Order { get; set; }
     }
 
     /// <summary>
@@ -56,6 +67,10 @@ namespace Intercom.Csharp.Users
     [JsonObject(MemberSerialization.OptIn)]
     public class User<T> where T : class, new()
     {
+        public User()
+        {
+            Pseudonym = "";
+        }
         /// <summary>
         /// The user's email address
         /// </summary>
@@ -63,12 +78,20 @@ namespace Intercom.Csharp.Users
         [JsonProperty("email")]
         public string Email { get; set; }
 
+
+        /// <summary>
+        /// A unique identifier for the user
+        /// </summary>
+        [DeserializeAs(Name = "id")]
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
         /// <summary>
         /// A unique identifier for the user
         /// </summary>
         [DeserializeAs(Name = "user_id")]
         [JsonProperty("user_id")]
-        public int Id { get; set; }
+        public string UserId { get; set; }
 
         /// <summary>
         /// The user's full name
@@ -76,17 +99,30 @@ namespace Intercom.Csharp.Users
         [DeserializeAs(Name = "name")]
         [JsonProperty("name")]
         public string Name { get; set; }
+        
+        private DateTime createdAt;
 
         /// <summary>
         /// The datetime the user was created
         /// </summary>
         [DeserializeAs(Name = "created_at")]
         [JsonProperty("created_at")]
-        [JsonConverter(typeof(UnixJsonDateTimeConverter))]
+        [JsonConverter(typeof (UnixJsonDateTimeConverter))]
         public DateTime CreatedAt { get; set; }
 
-        [DeserializeAs(Name = "last_impression_at")]
-        public DateTime LastImpressionAt { get; set; }
+        [DeserializeAs(Name = "updated_at")]
+        [JsonConverter(typeof(UnixJsonDateTimeConverter))]
+        public DateTime? UpdatedAt { get; set; }
+
+        [DeserializeAs(Name = "signed_up_at")]
+        [JsonProperty("signed_up_at")]
+        [JsonConverter(typeof(UnixJsonDateTimeConverter))]
+        public DateTime? SignedAt { get; set; }
+
+        [DeserializeAs(Name = "last_request_at")]
+        [JsonProperty("last_request_at")]
+        [JsonConverter(typeof(UnixJsonDateTimeConverter))]
+        public DateTime? LastRequestAt { get; set; }
 
         /// <summary>
         /// A hash of key/value pairs containing any other data about the user you want Intercom to store.
@@ -95,14 +131,11 @@ namespace Intercom.Csharp.Users
         [JsonProperty("custom_attributes")]
         public T CustomData { get; set; }
 
-        [DeserializeAs(Name = "social_profiles")]
-        public List<SocialProfile> SocialProfiles { get; set; }
-
         [DeserializeAs(Name = "location_data")]
         public LocationData LocationData { get; set; }
 
         [DeserializeAs(Name = "session_count")]
-        public int SessionCount { get; set; }
+        public int? SessionCount { get; set; }
 
         /// <summary>
         /// An IP address (e.g. "1.2.3.4") representing the last ip address the user visited your application from. (Used for updating location_data)
@@ -119,7 +152,45 @@ namespace Intercom.Csharp.Users
         public string LastSeenUserAgent { get; set; }
 
         [DeserializeAs(Name = "relationship_score")]
-        public int RelationshipScore { get; set; }
+        public int? RelationshipScore { get; set; }
+
+        [DeserializeAs(Name = "avatar")]
+        public Avatar Avatar { get; set; }
+
+        [DeserializeAs(Name = "unsubscribed_from_emails")]
+        [JsonProperty("unsubscribed_from_emails")]
+        public bool? UnsubscribedFromEmails { get; set; }
+
+        [DeserializeAs(Name = "pseudonym")]
+        public string Pseudonym { get; set; }
+
+        [DeserializeAs(Name = "anonymous")]
+        public bool? Anonymous { get; set; }
+
+        [DeserializeAs(Name = "companies")]
+        [JsonProperty("companies")]
+        public List<Company> Companies { get; set; }
+
+        [DeserializeAs(Name = "social_profiles")]
+        public List<SocialProfile> SocialProfiles { get; set; }
+    }
+
+    public class Company
+    {
+        [DeserializeAs(Name = "id")]
+        [JsonProperty("id")]
+        public string Id { get; set; }
+
+        [DeserializeAs(Name = "remove")]
+        [JsonProperty("remove")]
+        public bool Remove { get; set; }
+    }
+
+    public class Avatar
+    {
+        [DeserializeAs(Name = "image_url")]
+        [JsonProperty("image_url")]
+        public string Url { get; set; }
     }
 
     public class SocialProfile
@@ -133,7 +204,6 @@ namespace Intercom.Csharp.Users
         [DeserializeAs(Name = "username")]
         public string Username { get; set; }
 
-        // TODO: Weird, can't be int .. just too long.
         [DeserializeAs(Name = "id")]
         public string Id { get; set; }
     }
@@ -145,6 +215,9 @@ namespace Intercom.Csharp.Users
 
         [DeserializeAs(Name = "continent_code")]
         public string ContinentCode { get; set; }
+
+        [DeserializeAs(Name = "country_code")]
+        public string CountryCode { get; set; }
 
         [DeserializeAs(Name = "country_name")]
         public string Country { get; set; }
@@ -163,9 +236,6 @@ namespace Intercom.Csharp.Users
 
         [DeserializeAs(Name = "timezone")]
         public string Timezone { get; set; }
-
-        [DeserializeAs(Name = "country_code")]
-        public string CountryCode { get; set; }
     }
 }
 

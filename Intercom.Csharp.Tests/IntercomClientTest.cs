@@ -25,13 +25,14 @@ namespace Intercom.Csharp.Tests
         {
             var client = new IntercomClient("dn4gzhun", "b3db3b24a6904f471899bb826af0a326a4f72238");
             Random rnd = new Random();
-            var user = new User<CustomdataModel> () { 
-                Email = String.Format("unique{0}@yopmail.fr", rnd.Next()),
-                Name = "User random",                 
-                CreatedAt = DateTime.Parse("Jan 1, 2012"),
-                LastSeenIP = string.Format("{0}.{1}.{2}.{3}", rnd.Next(255), rnd.Next(255), rnd.Next(255), rnd.Next(255)),
-                CustomData = new CustomdataModel { Titi = "toto", Value = 12 }
-};
+            var user = new User<CustomdataModel>()
+                       {
+                           Email = String.Format("unique{0}@yopmail.fr", rnd.Next()),
+                           Name = "User random",
+                           CreatedAt = DateTime.Parse("Jan 1, 2012"),
+                           LastSeenIP = string.Format("{0}.{1}.{2}.{3}", rnd.Next(255), rnd.Next(255), rnd.Next(255), rnd.Next(255)),
+                           CustomData = new CustomdataModel { Titi = "toto", Value = 12 }
+                       };
             var ret = client.Users.Create(user);
             Assert.IsNotNull(ret);
             Assert.IsTrue(user.Email == ret.Email);
@@ -56,7 +57,29 @@ namespace Intercom.Csharp.Tests
         [TestCase]
         public void SendEvents()
         {
-            
+            var client = new IntercomClient("dn4gzhun", "b3db3b24a6904f471899bb826af0a326a4f72238");
+            var eventx = new Events.Event<CustomdataModel>()
+            {
+                UserId = "1",
+                CreatedAt = DateTime.Parse("Jan 1, 2012"),
+                EventName = "call-bolden",
+                MetaData = new CustomdataModel { Titi = "toto", Value = 12 }
+            };
+            Assert.Throws<IntercomException>(() => { client.Events.Send(eventx); });
+            var user = new User<CustomdataModel>()
+            {
+                Email = "event-tester@yopmail.fr",
+                Name = "event-tester",
+                UserId = "50"
+            };
+            var ret = client.Users.Create(user);
+            eventx.UserId = ret.UserId;
+            Assert.DoesNotThrow(() => { client.Events.Send(eventx); });
+            eventx.UserId = null;
+            eventx.Email = ret.Email;
+            Assert.DoesNotThrow(() => { client.Events.Send(eventx); });
+            client.Users.Delete(ret.Email);
+
         }
     }
 }

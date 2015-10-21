@@ -18,7 +18,7 @@
         /// <param name="pevent">The event to send.</param>
         /// <returns>True if the action was successfull.</returns>
         /// <exception cref="IntercomException">Something happened on intercom.</exception>
-        public bool Send(Event pevent)
+        public bool Send<T>(Event<T> pevent) where T : class, new()
         {
             return PostRequest(pevent, "/events");
         }

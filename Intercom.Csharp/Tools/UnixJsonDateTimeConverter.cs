@@ -35,8 +35,7 @@ namespace Intercom.Csharp.Tools
                 var delta = ((DateTime)value) - epoc;
                 if (delta.TotalSeconds < 0)
                 {
-                    throw new ArgumentOutOfRangeException(
-                        "Unix epoc starts January 1st, 1970");
+                    delta = new TimeSpan(0);
                 }
                 ticks = (long)delta.TotalSeconds;
             }
