@@ -34,14 +34,14 @@ namespace Intercom.Csharp.Configuration
         {
             get
             {
-                return (IntercomAccountElement)base.BaseGet(index);
+                return (IntercomAccountElement)BaseGet(index);
             }
             set
             {
-                if (base.BaseGet(index) != null)
-                    base.BaseRemoveAt(index);
+                if (BaseGet(index) != null)
+                    BaseRemoveAt(index);
 
-                this.BaseAdd(index, value);
+                BaseAdd(index, value);
             }
         }
     }

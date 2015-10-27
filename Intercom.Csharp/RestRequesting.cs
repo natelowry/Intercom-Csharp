@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using RestSharp;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using Intercom.Csharp.Configuration;
 using RestSharp.Authenticators;
-using RestSharp.Serializers;
 
 namespace Intercom.Csharp
 {
@@ -41,28 +37,47 @@ namespace Intercom.Csharp
             if (string.IsNullOrEmpty(username))
                 throw new ArgumentException("Username is required. Details can be found at http://docs.intercom.io/api#authentication", "username");
 
-            this.AuthUsername = username;
-            this.AuthPassword = password;
+            AuthUsername = username;
+            AuthPassword = password;
         }
         #endregion
 
+        private class ClientAndRequest
+        {
+            public RestClient Client { get; set; }
+            public RestRequest Request { get; set; }
+        }
+
+        private ClientAndRequest SetupRequest(Method method, string path, object obj)
+        {
+            RestClient client = new RestClient(Config.ApiBaseUrl)
+                                {
+                                    Authenticator = new HttpBasicAuthenticator(AuthUsername, AuthPassword),
+                                    UserAgent = UserAgent
+                                };
+
+            RestRequest request = new RestRequest(path, method);
+            request.RequestFormat = DataFormat.Json;
+            request.JsonSerializer = new JsonSerializer();
+
+            if (obj != null)
+            {
+                request.AddBody(obj);
+            }
+            return new ClientAndRequest {Client = client, Request = request};
+        }
+
         protected T GetRequest<T>(string path) where T : new()
         {
-            RestClient client = new RestClient(Config.ApiBaseUrl);
-            client.Authenticator = new HttpBasicAuthenticator(this.AuthUsername, this.AuthPassword);
-            client.UserAgent = RestRequesting.UserAgent;
-
-            RestRequest request = new RestRequest(path);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = client.Execute<T>(request);
+            var couple = SetupRequest(Method.GET, path, null);
+            var response = couple.Client.Execute<T>(couple.Request);
 
             HandleBadResponse(response.Content, response.StatusCode);
 
             return response.Data;
         }
 
-        private void HandleBadResponse(string content, System.Net.HttpStatusCode code)
+        private void HandleBadResponse(string content, HttpStatusCode code)
         {
             if (!(code == HttpStatusCode.Accepted || code == HttpStatusCode.Created || code == HttpStatusCode.OK))
                 throw new IntercomException(String.Format("{0}: {1}", code, content));
@@ -70,14 +85,8 @@ namespace Intercom.Csharp
 
         protected string GetRequest(string path)
         {
-            RestClient client = new RestClient(Config.ApiBaseUrl);
-            client.Authenticator = new HttpBasicAuthenticator(this.AuthUsername, this.AuthPassword);
-            client.UserAgent = RestRequesting.UserAgent;
-
-            RestRequest request = new RestRequest(path);
-            request.RequestFormat = DataFormat.Json;
-
-            var response = client.Execute(request);
+            var couple = SetupRequest(Method.GET, path, null);
+            var response = couple.Client.Execute(couple.Request);
 
             HandleBadResponse(response.Content, response.StatusCode);
 
@@ -106,20 +115,8 @@ namespace Intercom.Csharp
 
         private bool Request<TInput>(Method method, TInput obj, string path) 
         {
-            RestClient client = new RestClient(Config.ApiBaseUrl);
-            client.Authenticator = new HttpBasicAuthenticator(this.AuthUsername, this.AuthPassword);
-            client.UserAgent = RestRequesting.UserAgent;
-
-            RestRequest request = new RestRequest(path, method);
-            request.RequestFormat = DataFormat.Json;
-            request.JsonSerializer = new JsonSerializer();
-
-            if (obj != null)
-            {
-                request.AddBody(obj);
-            }
-
-            var response = client.Execute(request);
+            var couple = SetupRequest(method, path, obj);
+            var response = couple.Client.Execute(couple.Request); 
 
             HandleBadResponse(response.Content, response.StatusCode);
 
@@ -128,19 +125,8 @@ namespace Intercom.Csharp
 
         private TOutput Request<TOutput, TInput>(Method method, TInput obj, string path) where TOutput : new()
         {
-            RestClient client = new RestClient(Config.ApiBaseUrl);
-            client.Authenticator = new HttpBasicAuthenticator(this.AuthUsername, this.AuthPassword);
-            client.UserAgent = RestRequesting.UserAgent;
-
-            RestRequest request = new RestRequest(path, method);
-            request.RequestFormat = DataFormat.Json;
-            request.JsonSerializer = new JsonSerializer();
-
-            if (obj != null)
-            {
-                request.AddBody(obj);
-            }
-            var response = client.Execute<TOutput>(request);
+            var couple = SetupRequest(method, path, obj);
+            var response = couple.Client.Execute<TOutput>(couple.Request);
 
             HandleBadResponse(response.Content, response.StatusCode);
 

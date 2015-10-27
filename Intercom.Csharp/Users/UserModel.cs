@@ -99,8 +99,6 @@ namespace Intercom.Csharp.Users
         [DeserializeAs(Name = "name")]
         [JsonProperty("name")]
         public string Name { get; set; }
-        
-        private DateTime createdAt;
 
         /// <summary>
         /// The datetime the user was created

@@ -1,29 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using Newtonsoft.Json;
+using RestSharp.Serializers;
 
 namespace Intercom.Csharp
 {
-    #region Imports
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.IO;
-    using Newtonsoft.Json;
-    using RestSharp.Serializers;
-    #endregion
-
     /// <summary>
     /// Default JSON serializer for request bodies
     /// Doesn't currently use the SerializeAs attribute, defers to Newtonsoft's attributes
     /// </summary>
     public class JsonSerializer : ISerializer
     {
-        private readonly Newtonsoft.Json.JsonSerializer _serializer;
+        private readonly Newtonsoft.Json.JsonSerializer serializer;
 
         /// <summary>
         /// Default serializer
@@ -31,7 +18,7 @@ namespace Intercom.Csharp
         public JsonSerializer()
         {
             ContentType = "application/json";
-            _serializer = new Newtonsoft.Json.JsonSerializer
+            serializer = new Newtonsoft.Json.JsonSerializer
             {
                 MissingMemberHandling = MissingMemberHandling.Ignore,
                 NullValueHandling = NullValueHandling.Include,
@@ -45,7 +32,7 @@ namespace Intercom.Csharp
         public JsonSerializer(Newtonsoft.Json.JsonSerializer serializer)
         {
             ContentType = "application/json";
-            _serializer = serializer;
+            this.serializer = serializer;
         }
 
         /// <summary>
@@ -62,7 +49,7 @@ namespace Intercom.Csharp
                     jsonTextWriter.Formatting = Formatting.Indented;
                     jsonTextWriter.QuoteChar = '"';
 
-                    _serializer.Serialize(jsonTextWriter, obj);
+                    serializer.Serialize(jsonTextWriter, obj);
 
                     var result = stringWriter.ToString();
                     return result;

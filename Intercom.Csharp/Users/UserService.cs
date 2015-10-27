@@ -26,21 +26,21 @@ namespace Intercom.Csharp.Users
         /// Retrieves a paginated list of all users in your application on Intercom.
         /// </summary>
         /// <param name="page">Optional, defaults to 1.</param>
-        /// <param name="per_page">Optional, defaults to 500 (max of 500)</param>
+        /// <param name="perPage">Optional, defaults to 500 (max of 500)</param>
         /// <returns>The paginated object if successful, null otherwise.</returns>
-        public UserViewModel<T> All<T>(int? page, int? per_page) where T : class, new()
+        public UserViewModel<T> All<T>(int? page, int? perPage) where T : class, new()
         {
-            if (page.HasValue && per_page.HasValue)
+            if (page.HasValue && perPage.HasValue)
             {
-                return GetRequest<UserViewModel<T>>(String.Format("/users?page={0}&per_page={1}", page.Value, per_page.Value));
+                return GetRequest<UserViewModel<T>>(String.Format("/users?page={0}&per_page={1}", page.Value, perPage.Value));
             }
-            else if (page.HasValue && !per_page.HasValue)
+            else if (page.HasValue)
             {
                 return GetRequest<UserViewModel<T>>(String.Format("/users?page={0}", page.Value));
             }
-            else if (per_page.HasValue && !page.HasValue)
+            else if (perPage.HasValue)
             {
-                return GetRequest<UserViewModel<T>>(String.Format("/users?per_page={0}", per_page.Value));
+                return GetRequest<UserViewModel<T>>(String.Format("/users?per_page={0}", perPage.Value));
             }
             else
             {
@@ -104,7 +104,7 @@ namespace Intercom.Csharp.Users
         /// <returns>The updated user object if success, null otherwise.</returns>
         public User<T> Update<T>(User<T> user) where T : class, new()
         {
-            return PutRequest<User<T>, User<T>>(user, "/users");
+            return PostRequest<User<T>, User<T>>(user, "/users");
         }
     }
 }

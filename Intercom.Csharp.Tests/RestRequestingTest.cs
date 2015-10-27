@@ -1,6 +1,4 @@
-﻿using System.Net;
-using NUnit.Framework;
-using NUnit.Framework.Constraints;
+﻿using NUnit.Framework;
 
 namespace Intercom.Csharp.Tests
 {
@@ -9,8 +7,7 @@ namespace Intercom.Csharp.Tests
         [TestCase("users")]
         public void GetRequestTest(string path)
         {
-            string tmp = "";
-            var ex = Assert.Throws<IntercomException>(() => { tmp = GetRequest(path); });
+            var ex = Assert.Throws<IntercomException>(() => { GetRequest(path); });
             Assert.That(ex.Message, Is.StringContaining("\"error.list\""));
 
         }

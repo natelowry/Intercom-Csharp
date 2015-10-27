@@ -34,11 +34,11 @@ namespace Intercom.Csharp.Configuration
         public IntercomAccountElement GetDefaultOrFirst()
         {
             IntercomAccountElement result = null;
-            if (!string.IsNullOrEmpty(this.DefaultAccount))
+            if (!string.IsNullOrEmpty(DefaultAccount))
             {
-                foreach (IntercomAccountElement element in this.Accounts)
+                foreach (IntercomAccountElement element in Accounts)
                 {
-                    if (element.Name == this.DefaultAccount)
+                    if (element.Name == DefaultAccount)
                     {
                         result = element;
                         break;
@@ -48,9 +48,9 @@ namespace Intercom.Csharp.Configuration
             else
             {
                 // If there are account elements in the web.config then ..
-                if (this.Accounts.Count > 0)
+                if (Accounts.Count > 0)
                 {
-                    result = this.Accounts[0] as IntercomAccountElement;
+                    result = Accounts[0] as IntercomAccountElement;
                 }
             }
 

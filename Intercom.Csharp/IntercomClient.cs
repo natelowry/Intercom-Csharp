@@ -15,8 +15,8 @@ namespace Intercom.Csharp
 
         public IntercomClient(string username, string password)
         {
-            this.Users = new UserService(username, password);
-            this.Events = new EventService(username, password);
+            Users = new UserService(username, password);
+            Events = new EventService(username, password);
         }
         #endregion
 
