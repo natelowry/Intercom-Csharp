@@ -171,6 +171,9 @@ namespace Intercom.Csharp.Users
 
         [DeserializeAs(Name = "social_profiles")]
         public List<SocialProfile> SocialProfiles { get; set; }
+        
+        [DeserializeAs(Name = "segments")]
+        public SegmentsContainer SegmentsContainer { get; set; }
     }
 
     public class Company
@@ -234,6 +237,18 @@ namespace Intercom.Csharp.Users
 
         [DeserializeAs(Name = "timezone")]
         public string Timezone { get; set; }
+    }
+    
+    public class SegmentsContainer
+    {
+        [DeserializeAs(Name = "segments")]
+        public List<Segment> Segments { get; set; }
+    }
+
+    public class Segment
+    {
+        [DeserializeAs(Name = "id")]
+        public string Id { get; set; }
     }
 }
 
