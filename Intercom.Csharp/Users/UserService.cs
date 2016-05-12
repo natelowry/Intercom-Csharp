@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace Intercom.Csharp.Users
 {
@@ -65,7 +66,7 @@ namespace Intercom.Csharp.Users
         /// <returns>The found user if successful, null otherwise.</returns>
         public User<T> Single<T>(string emailAddress) where T : class, new()
         {
-            return GetRequest<User<T>>(String.Format("/users?email={0}", emailAddress));
+            return GetRequest<User<T>>(String.Format("/users?email={0}", WebUtility.UrlEncode(emailAddress)));
         }
 
         /// <summary>
@@ -85,7 +86,7 @@ namespace Intercom.Csharp.Users
         /// <param name="emailAddress">The email used to delete the user.</param>
         public void Delete(string emailAddress)
         {
-            DeleteRequest(String.Format("/users?email={0}", emailAddress));
+            DeleteRequest(String.Format("/users?email={0}", WebUtility.UrlEncode(emailAddress)));
         }
 
         /// <summary>
